@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 
 
 class TextChunker:
-    def __init__(self, model_name='models--sentence-transformers--all-MiniLM-L6-v2'):
+    def __init__(self, model_name='models--sentence-transformers--all-MiniLM-L6-v2/snapshots/c9745ed1d9f207416be6d2e6f8de32d1f16199bf'):
         """Initialize the TextChunker with a specified sentence transformer model."""
         self.model = SentenceTransformer(model_name)
     

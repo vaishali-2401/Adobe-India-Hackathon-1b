@@ -2,7 +2,7 @@ import json
 import os
 import re
 from pathlib import Path
-import pymupdf  
+import fitz  # PyMuPDF
 import pymupdf4llm  
 from collections import Counter, defaultdict
 import logging
@@ -148,7 +148,7 @@ def analyze_document_structure(doc):
     
     # Collect all text with font information
     for page_num, page in enumerate(doc):
-        blocks = page.get_text("dict", flags=pymupdf.TEXTFLAGS_TEXT)["blocks"]
+        blocks = page.get_text("dict", flags=fitz.TEXTFLAGS_TEXT)["blocks"]
         
         for block in blocks:
             if block['type'] == 0:  # Text block
@@ -410,7 +410,7 @@ def extract_outline(pdf_path: Path) -> dict:
 
     try:
         # First: Extract content structure using pymupdf4llm as primary source
-        doc = pymupdf.open(pdf_path)
+        doc = fitz.open(pdf_path)
         logging.info(f"Successfully opened '{pdf_path.name}', starting advanced analysis.")
         
         llm_data = extract_with_pymupdf4llm(pdf_path)

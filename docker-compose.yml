@@ -1,0 +1,66 @@
+version: "3.8"
+
+services:
+  travel-planner:
+    build: .
+    image: travel-planner:latest
+    container_name: travel-planner-app
+    volumes:
+      # Mount local directories to container
+      - ./PDFs:/app/PDFs:ro # Read-only PDF input
+      - ./output1a:/app/output1a # PDF structure output
+      - .:/app/host # Host filesystem access
+      # Optional: mount specific files
+      - ./challenge1b_input.json:/app/challenge1b_input.json:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - NLTK_DATA=/usr/local/nltk_data
+    working_dir: /app
+    command: /app/run_pipeline.sh
+    # Uncomment for interactive mode:
+    # stdin_open: true
+    # tty: true
+    # command: bash
+    restart: "no"
+
+  # Alternative service for PDF extraction only
+  pdf-extractor:
+    build: .
+    image: travel-planner:latest
+    container_name: travel-pdf-extractor
+    volumes:
+      - ./PDFs:/app/PDFs:ro
+      - ./output1a:/app/output1a
+    environment:
+      - PYTHONUNBUFFERED=1
+      - NLTK_DATA=/usr/local/nltk_data
+    command: /app/extract_pdfs.sh
+    restart: "no"
+    profiles: ["pdf-only"]
+
+  # Alternative service for travel analysis only
+  travel-analyzer:
+    build: .
+    image: travel-planner:latest
+    container_name: travel-analyzer
+    volumes:
+      - ./output1a:/app/output1a:ro
+      - .:/app/host
+    environment:
+      - PYTHONUNBUFFERED=1
+      - NLTK_DATA=/usr/local/nltk_data
+    command: /app/analyze_travel.sh
+    restart: "no"
+    profiles: ["analysis-only"]
+
+# Optional: Define volumes for persistent data
+volumes:
+  pdf_structures:
+    driver: local
+  travel_output:
+    driver: local
+
+# Optional: Define networks if needed for complex setups
+networks:
+  travel-net:
+    driver: bridge

@@ -150,7 +150,7 @@ def main():
     if "document_chunks" in [c.name for c in client.list_collections()]:
         client.delete_collection("document_chunks")
     collection = client.create_collection(name="document_chunks")
-    model = SentenceTransformer("models--sentence-transformers--all-MiniLM-L6-v2")
+    model = SentenceTransformer("models--sentence-transformers--all-MiniLM-L6-v2/snapshots/c9745ed1d9f207416be6d2e6f8de32d1f16199bf")
 
     texts, metadatas, ids = [], [], []
     for i, chunk in enumerate(all_refined_chunks):
